@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerMovment : MonoBehaviour
 {
     [SerializeField] private int speed = 30;
+    [SerializeField] private float rotationSpeed = 200;
     private Vector3 movment;
     Rigidbody playerRB;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -19,21 +20,14 @@ public class PlayerMovment : MonoBehaviour
 
     void Movement()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitObj;
         float horizontalMove = Input.GetAxis("Horizontal");
         float verticalMove = Input.GetAxis("Vertical");
 
-        if (Physics.Raycast(ray, out hitObj))
-        {
-            movment.Set(horizontalMove, 0, verticalMove);
-            movment = movment.normalized * speed * Time.deltaTime;
-            playerRB.MovePosition(transform.position + movment);
+        movment.Set(horizontalMove, 0, verticalMove);
+        movment = movment.normalized * speed * Time.deltaTime;
+        transform.Translate(movment * speed * Time.deltaTime);
 
-            Vector3 playerAim = hitObj.point - transform.position;
-            playerAim.y = 0;
-            Quaternion newRotation = Quaternion.LookRotation(playerAim);
-            playerRB.MoveRotation(newRotation);
-        }
+        float rotationInput = Input.GetAxis("Mouse X");
+        transform.Rotate(Vector3.up,rotationInput * rotationSpeed * Time.deltaTime);
     }
 }
